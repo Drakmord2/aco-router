@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+    python:
+        build: ../
+        volumes:
+            - ../:/var/www
+        ports:
+            - 6000:6000
+        networks:
+            - python-net
+
+networks:
+    python-net:
+        driver: bridge
