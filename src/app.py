@@ -9,9 +9,11 @@ def main():
 
 
 if __name__ == '__main__':
-    print('\n\t-- ACO Router --')
+    print('\n\t-- ACO Router --\n')
 
     main()
+
+    print('\n----------\n')
 
 # TODO Try-catch so no final
 #    try:
