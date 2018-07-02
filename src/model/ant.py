@@ -223,6 +223,7 @@ class Ant:
         # Choose one of them using a weighted probability.
         total = sum(weights)
         cumdist = list(itertools.accumulate(weights)) + [total]
+
         return choices[bisect.bisect(cumdist, random.random() * total)]
 
     def make_move(self, dest):

@@ -15,37 +15,43 @@ class AcoController:
         pass
 
     def solve(self):
-        nodes = []
-        for _ in range(40):
-            x = random.uniform(-10, 10)
-            y = random.uniform(-10, 10)
-            nodes.append((x, y))
+        nodes = [
+            (0, 0, 1, 'Recife'), (1, 0, 1, 'BR-232'), (2, 0, 1, 'Caruaru'), (2, 2, 10, 'Toritama'), (4, 0, 1, 'Arcoverde'),
+            (3, 0, 1, 'PE-C1'), (4, 1, 1, 'PE-A1'), (5, 2, 15, 'Salgueiro'), (5, 0, 1, 'PE-A2'), (5, -1, 15, 'Petrolandia'),
+            (6, -1, 20, 'Paulo Afonso'), (6, 1, 1, 'Cabrobo'), (7, 0, 1, 'PE-CA1'), (7, 2, 1, 'PE-S1'), (8, 1, 1, 'BR-428'),
+            (9, 0, 1, 'Petrolina')
+        ]
 
-        world = World(nodes, self.euclidean)
+        edges = [
+            (0, 1), (1, 2), (2, 3), (2, 5), (3, 4), (5, 4), (4, 6), (4, 8), (6, 7), (7, 11),
+            (7, 13), (8, 9), (8, 11), (9, 10), (10, 12), (12, 11), (12, 14), (13, 14), (14, 15)
+        ]
 
-        solver = Solver()
+        world = World(nodes, self.cost)
+
+        ants = 20
+        solver = Solver(ant_count=ants)
         solution = solver.solve(world)
 
         print("Nodes: ", len(nodes))
+        print("Number of ants: ", ants)
         print("Shortest distance: ", solution.distance)
+
         print("Path: ")
         path = solution.tour
         for i in range(len(path)):
-            print("\t"+str(i+1)+": ", path[i])
+            print("\t"+str(i+1)+": ", path[i][3])
 
     # Fitness
-    def euclidean(self, a, b):
-        return math.sqrt(pow(a[1] - b[1], 2) + pow(a[0] - b[0], 2))
+    def cost(self, a, b):
+        distance = math.sqrt(pow(a[1] - b[1], 2) + pow(a[0] - b[0], 2))
+        return distance * (1 / b[2])
 
     def request_api(self):
-        gmaps = googlemaps.Client(key="AIzaSyAAI5GY1EGnoLFBZMet8M0pafaD7fNn7so")
+        gmaps = googlemaps.Client(key="API_KEY")
 
-        # Request directions via public transit
-        now = datetime.now()
-        directions_result = gmaps.directions("Sydney Town Hall",
-                                             "Parramatta, NSW",
-                                             mode="transit",
-                                             departure_time=now)
-        print(directions_result)
+        result = gmaps.directions("Escola Politecnica de Pernambuco",
+                                  "Quartel do Derby",
+                                  mode="driving")
 
-        return directions_result
+        return result

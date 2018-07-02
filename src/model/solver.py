@@ -102,12 +102,14 @@ class Solver:
         world.reset_pheromone(self.t0)
         global_best = None
         colony = self.create_colony(world)
-        for i in range(self.limit):
+
+        for _ in range(self.limit):
             self.reset_colony(colony)
             local_best = self.aco(colony)
             if global_best is None or local_best < global_best:
                 global_best = copy(local_best)
             self.trace_elite(global_best)
+
         return global_best
     
     def solutions(self, world):
@@ -173,8 +175,10 @@ class Solver:
         :rtype: list
         """
         ants = []
-        starts = world.nodes
-        n = len(starts)
+        # starts = world.nodes
+        starts = world.nodes[0]
+        # n = len(starts)
+        n = 1
         if even:
             # Since the caller wants an even distribution, use a round-robin 
             # method until the number of ants left to create is less than the
@@ -197,7 +201,7 @@ class Solver:
             # Just pick random nodes.
             ants.extend([
                 Ant(self.alpha, self.beta).initialize(
-                    world, start=starts[random.randrange(n)]) 
+                    world, start=starts)  # starts[random.randrange(n)]
                 for i in range(count)
             ])
         return ants

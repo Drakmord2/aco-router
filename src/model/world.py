@@ -64,14 +64,15 @@ class World:
         self.description = kwargs.get('description', None)
         self._nodes = nodes
         self.lfunc = lfunc
-        self.edges = self.create_edges()
+        edges = kwargs.get('edges', None)
+        self.edges = self.create_edges(edges)
         
     @property
     def nodes(self):
         """Node IDs."""
         return list(range(len(self._nodes)))
     
-    def create_edges(self):
+    def create_edges(self, uedges=None):
         """Create edges from the nodes.
         
         The job of this method is to map node ID pairs to :class:`Edge`
@@ -83,6 +84,14 @@ class World:
         :rtype: :class:`dict`
         """
         edges = {}
+        if uedges:
+            for m, n in uedges:
+                a, b = self.data(m), self.data(n)
+                if a != b:
+                    edge = Edge(a, b, length=self.lfunc(a, b))
+                    edges[m, n] = edge
+            return edges
+
         for m in self.nodes:
             for n in self.nodes:
                 a, b = self.data(m), self.data(n)
