@@ -9,14 +9,9 @@ def main():
 
 
 if __name__ == '__main__':
-    print('\n\t-- ACO Router --\n')
-
-    main()
-
-    print('\n----------\n')
-
-# TODO Try-catch so no final
-#    try:
-#        main()
-#    except Exception as err:
-#        print('- Runtime error: ', err)
+    try:
+        print('\n\t-- ACO Router --\n')
+        main()
+        print('\n----------------------------------\n')
+    except Exception as err:
+        print('- Runtime error: ', err)
