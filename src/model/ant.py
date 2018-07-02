@@ -122,6 +122,7 @@ class Ant:
         self.visited = [self.start]
         self.unvisited = [n for n in self.world.nodes if n != self.start]
         self.traveled = []
+
         return self
 
     def clone(self):
@@ -140,6 +141,7 @@ class Ant:
         ant.unvisited = self.unvisited[:]
         ant.traveled = self.traveled[:]
         ant.distance = self.distance
+
         return ant
 
     @property
@@ -181,9 +183,9 @@ class Ant:
     
         :rtype: bool
         """
-        # This is only true after we have made the move back to the starting
-        # node.
-        return len(self.traveled) != len(self.visited)
+        moves = self.remaining_moves()
+
+        return len(moves) != 0
 
     def move(self):
         """Choose, make, and return a move from the remaining moves.
@@ -193,6 +195,7 @@ class Ant:
         """
         remaining = self.remaining_moves()
         choice = self.choose_move(remaining)
+
         return self.make_move(choice)
 
     def remaining_moves(self):
@@ -200,7 +203,13 @@ class Ant:
         
         :rtype: list
         """
-        return self.unvisited
+        node = self.node
+        moves = []
+        for key, edge in self.world.edges.items():
+            if key[0] == node:
+                moves.append(key[1])
+
+        return moves
 
     def choose_move(self, choices):
         """Choose a move from all possible moves.
@@ -241,6 +250,9 @@ class Ant:
         # changed before we return to calling code, store a reference now.
         ori = self.node
 
+        if ori == dest:
+            return None
+
         # When dest is None, all nodes have been visited but we may not
         # have returned to the node on which we started. If we have, then
         # just do nothing and return None. Otherwise, set the dest to the
@@ -249,7 +261,6 @@ class Ant:
         if dest is None:
             if self.can_move() is False:
                 return None
-            dest = self.start   # last move is back to the start
         else:
             self.visited.append(dest)
             self.unvisited.remove(dest)
@@ -257,6 +268,7 @@ class Ant:
         edge = self.world.edges[ori, dest]
         self.traveled.append(edge)
         self.distance += edge.length
+
         return edge
 
     def weigh(self, edge):

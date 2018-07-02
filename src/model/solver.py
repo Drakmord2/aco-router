@@ -71,8 +71,9 @@ class Solver:
         
         :param list colony: the :class:`Ant`\s to reset
         """
+        start_node = 0
         for ant in colony:
-            ant.initialize(ant.world)
+            ant.initialize(ant.world, start=start_node)
         
     def aco(self, colony):
         """Return the best solution by performing the ACO meta-heuristic.
@@ -175,11 +176,9 @@ class Solver:
         :rtype: list
         """
         ants = []
-        # starts = world.nodes
-        starts = world.nodes[0]
-        # n = len(starts)
-        n = 1
         if even:
+            starts = world.nodes
+            n = len(starts)
             # Since the caller wants an even distribution, use a round-robin 
             # method until the number of ants left to create is less than the
             # number of nodes.
@@ -198,10 +197,11 @@ class Solver:
                 for i in range(count % n)
             ])
         else:
+            start = 0
             # Just pick random nodes.
             ants.extend([
                 Ant(self.alpha, self.beta).initialize(
-                    world, start=starts)  # starts[random.randrange(n)]
+                    world, start=start)
                 for i in range(count)
             ])
         return ants
@@ -259,6 +259,9 @@ class Solver:
         """
         ants = sorted(ants)[:len(ants) // 2]
         for a in ants:
+            if a.distance == 0:
+                continue
+
             p = self.q / a.distance
             for edge in a.path:
                 edge.pheromone = max(
@@ -279,6 +282,9 @@ class Solver:
         :param Ant ant: the elite :class:`Ant`
         """
         if self.elite:
+            if ant.distance == 0:
+                return
+
             p = self.elite * self.q / ant.distance
             for edge in ant.path:
                 edge.pheromone += p
