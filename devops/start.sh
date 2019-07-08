@@ -2,4 +2,7 @@
 
 echo "Started Python container";
 
-tail -f /dev/null;
+cd src/;
+python app.py;
+
+
