@@ -1,5 +1,5 @@
 numpy==1.14.5
-scipy==1.1.0
+scipy==1.10.0
 matplotlib==2.2.2
 pandas==0.23.1
 googlemaps==2.5.1
